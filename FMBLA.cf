@@ -1,0 +1,135 @@
+header   __RCVD_IN_FMBBL     eval:check_rbl('blfmbla-firsttrusted', 'bl.fmb.la.')
+tflags   __RCVD_IN_FMBBL     net
+
+ifplugin Mail::SpamAssassin::Plugin::EmailBL
+  header EBL_FMBLA eval:check_emailbl('all-headers', 'bl.fmb.la')
+  tflags EBL_FMBLA net
+  score  EBL_FMBLA 0.01
+endif
+
+#### URI BL Check
+
+urirhssub  BODY_URIBL_FMBLA    bl.fmb.la. A 127.0.0.2
+body       BODY_URIBL_FMBLA    eval:check_uridnsbl('BODY_URIBL_FMBLA')
+describe   BODY_URIBL_FMBLA    Body contains URI listed in FMBLA URIBL
+tflags     BODY_URIBL_FMBLA    net
+score      BODY_URIBL_FMBLA    3.0
+
+header     FROM_URIBL_FMBLA    eval:check_rbl_from_domain('fmbla', 'bl.fmb.la.', '127.0.0.2')
+describe   FROM_URIBL_FMBLA    From address listed in FMBLA URIBL
+tflags     FROM_URIBL_FMBLA    net
+score      FROM_URIBL_FMBLA    5.0
+
+#### Communicado
+
+urirhssub  BODY_URIBL_COMMUNICADO_FMBLA    bl.fmb.la. A 127.1.0.2
+body       BODY_URIBL_COMMUNICADO_FMBLA    eval:check_uridnsbl('BODY_URIBL_COMMUNICADO_FMBLA')
+describe   BODY_URIBL_COMMUNICADO_FMBLA    Body contains Communicado
+tflags     BODY_URIBL_COMMUNICADO_FMBLA    net
+score      BODY_URIBL_COMMUNICADO_FMBLA    10.0
+
+header     FROM_URIBL_COMMUNICADO_FMBLA    eval:check_rbl_from_domain('fmbla', 'bl.fmb.la.', '127.1.0.2')
+describe   FROM_URIBL_COMMUNICADO_FMBLA    From address Communicado domain
+tflags     FROM_URIBL_COMMUNICADO_FMBLA    net
+score      FROM_URIBL_COMMUNICADO_FMBLA    10.0
+
+#### IP Address Checks
+
+header   RCVD_IN_FMBBL   eval:check_rbl_sub('blfmbla-firsttrusted', '127.0.0.2')
+describe RCVD_IN_FMBBL   Relay in FMBLA
+tflags   RCVD_IN_FMBBL   net
+score    RCVD_IN_FMBBL   2.0
+
+header   RCVD_IN_FMBBL_PSBL_CIDR24   eval:check_rbl_sub('blfmbla-firsttrusted', '^127\.0\.0\.24$')
+describe RCVD_IN_FMBBL_PSBL_CIDR24   Relay's IP/24 CIDR contains many PSBL hits
+tflags   RCVD_IN_FMBBL_PSBL_CIDR24   net
+score    RCVD_IN_FMBBL_PSBL_CIDR24   3.0
+
+header   RCVD_IN_FMBBL_CIDR24   eval:check_rbl_sub('blfmbla-firsttrusted', '^127.0.1.24$')
+describe RCVD_IN_FMBBL_CIDR24   Relay's IP/24 CIDR contains many spamming IPs
+tflags   RCVD_IN_FMBBL_CIDR24   net
+score    RCVD_IN_FMBBL_CIDR24   0.5
+
+header   RCVD_IN_FMBBL_CIDR25   eval:check_rbl_sub('blfmbla-firsttrusted', '^127\.0\.1\.25$')
+describe RCVD_IN_FMBBL_CIDR25   Relay's IP/25 CIDR contains many spamming IPs
+tflags   RCVD_IN_FMBBL_CIDR25   net
+score    RCVD_IN_FMBBL_CIDR25   0.75
+
+header   RCVD_IN_FMBBL_CIDR26   eval:check_rbl_sub('blfmbla-firsttrusted', '^127\.0\.1\.26$')
+describe RCVD_IN_FMBBL_CIDR26   Relay's IP/26 CIDR contains many spamming IPs
+tflags   RCVD_IN_FMBBL_CIDR26   net
+score    RCVD_IN_FMBBL_CIDR26   1.0
+
+header   RCVD_IN_FMBBL_CIDR27   eval:check_rbl_sub('blfmbla-firsttrusted', '^127\.0\.1\.27$')
+describe RCVD_IN_FMBBL_CIDR27   Relay's IP/27 CIDR contains many spamming IPs
+tflags   RCVD_IN_FMBBL_CIDR27   net
+score    RCVD_IN_FMBBL_CIDR27   1.5
+
+header   RCVD_IN_FMBBL_CIDR28   eval:check_rbl_sub('blfmbla-firsttrusted', '^127\.0\.1\.28$')
+describe RCVD_IN_FMBBL_CIDR28   Relay's IP/28 CIDR contains many spamming IPs
+tflags   RCVD_IN_FMBBL_CIDR28   net
+score    RCVD_IN_FMBBL_CIDR28   1.75
+
+#### Short URI Check
+
+urirhssub  FMBLA_REDIR    short.fmb.la. A 127.0.0.2
+body       FMBLA_REDIR    eval:check_uridnsbl('FMBLA_REDIR')
+describe   FMBLA_REDIR    Body contains URL shortner
+tflags     FMBLA_REDIR    net
+score      FMBLA_REDIR    0.01
+
+##### NS BL Check
+
+urifullnsrhssub  BODY_NS_URIBL_FMBLA    nsbl.fmb.la. A 127.0.0.2
+body             BODY_NS_URIBL_FMBLA    eval:check_uridnsbl('BODY_NS_URIBL_FMBLA')
+describe         BODY_NS_URIBL_FMBLA    Body contains URI with NS records listed in FMBLA URIBL
+tflags           BODY_NS_URIBL_FMBLA    net
+score            BODY_NS_URIBL_FMBLA    3.0
+
+urifullnsrhssub  HEAD_NS_URIBL_FMBLA    nsbl.fmb.la. A 127.0.0.2
+header           HEAD_NS_URIBL_FMBLA    eval:check_uridnsbl('HEAD_NS_URIBL_FMBLA')
+describe         HEAD_NS_URIBL_FMBLA    Header contains URI with NS records listed in FMBLA URIBL
+tflags           HEAD_NS_URIBL_FMBLA    net
+score            HEAD_NS_URIBL_FMBLA    3.0
+
+#### Fresh Domain Check
+
+urirhssub  BODY_NEWDOMAIN_FMBLA    fresh.fmb.la. A 127.0.0.2
+body       BODY_NEWDOMAIN_FMBLA    eval:check_uridnsbl('BODY_NEWDOMAIN_FMBLA')
+describe   BODY_NEWDOMAIN_FMBLA    Body contains URI listed in FMBLA URIBL
+tflags     BODY_NEWDOMAIN_FMBLA    net
+score      BODY_NEWDOMAIN_FMBLA    0.2
+
+header     FROM_NEWDOMAIN_FMBLA    eval:check_rbl_from_domain('fmblafresh', 'fresh.fmb.la.', '127.0.0.2')
+describe   FROM_NEWDOMAIN_FMBLA    From address listed in FMBLA URIBL
+tflags     FROM_NEWDOMAIN_FMBLA    net
+score      FROM_NEWDOMAIN_FMBLA    0.2
+
+urirhssub  BODY_NEWDOMAIN_14_FMBLA    fresh.fmb.la. A 127.0.0.14
+body       BODY_NEWDOMAIN_14_FMBLA    eval:check_uridnsbl('BODY_NEWDOMAIN_14_FMBLA')
+describe   BODY_NEWDOMAIN_14_FMBLA    Body contains URI listed in FMBLA URIBL
+tflags     BODY_NEWDOMAIN_14_FMBLA    net
+score      BODY_NEWDOMAIN_14_FMBLA    0.2
+
+header     FROM_NEWDOMAIN_14_FMBLA    eval:check_rbl_from_domain('fmblafresh', 'fresh.fmb.la.', '127.0.0.14')
+describe   FROM_NEWDOMAIN_14_FMBLA    From address listed in FMBLA URIBL
+tflags     FROM_NEWDOMAIN_14_FMBLA    net
+score      FROM_NEWDOMAIN_14_FMBLA    0.2
+
+meta NEWDOMAIN_FMBLA_URIBL (URIBL_RHS_DOB || BODY_NEWDOMAIN_FMBLA || FROM_NEWDOMAIN_FMBLA || FROM_NEWDOMAIN_14_FMBLA || BODY_NEWDOMAIN_14_FMBLA) && (URIBL_DBL_SPAM || URIBL_SBL_A)
+score NEWDOMAIN_FMBLA_URIBL 2.0
+
+#### DKIM Whitelist
+ifpugin Mail::SpamAssassin::Plugin::AskDNS
+  askdns     DKIM_WHITELIST_FMBLA _DKIMDOMAIN_.wl.fmb.la A /^127\.0\.0\.1$/
+  tflags     DKIM_WHITELIST_FMBLA nice net
+  describe   DKIM_WHITELIST_FMBLA Whitelisted DKIM Sender
+  score      DKIM_WHITELIST_FMBLA -7.5
+endif # Mail::SpamAssassin::Plugin::AskDNS
+
+#### Below is optional, whitelist known DKIM senders, uncomment to use
+
+ifplugin Mail::SpamAssassin::Plugin::Shortcircuit
+#  shortcircuit DKIM_WHITELIST_FMBLA ham
+endif # Mail::SpamAssassin::Plugin::Shortcircuit
+

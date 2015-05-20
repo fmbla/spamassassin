@@ -106,12 +106,6 @@ ifpugin Mail::SpamAssassin::Plugin::AskDNS
   describe   DKIM_WHITELIST_FMBLA Whitelisted DKIM Sender
 endif # Mail::SpamAssassin::Plugin::AskDNS
 
-#### Below is optional, whitelist known DKIM senders, uncomment to use
-
-ifplugin Mail::SpamAssassin::Plugin::Shortcircuit
-#  shortcircuit DKIM_WHITELIST_FMBLA ham
-endif # Mail::SpamAssassin::Plugin::Shortcircuit
-
 #### Scores
 #DKIM Whitelist
 score    DKIM_WHITELIST_FMBLA -7.5
@@ -149,3 +143,9 @@ score    FROM_NEWDOMAIN_FMBLA    0.2
 score    BODY_NEWDOMAIN_14_FMBLA    0.2
 score    FROM_NEWDOMAIN_14_FMBLA    0.2
 score    NEWDOMAIN_FMBLA_URIBL 2.0
+
+#### Below is optional, whitelist known DKIM senders, uncomment to use
+
+ifplugin Mail::SpamAssassin::Plugin::Shortcircuit
+#  shortcircuit DKIM_WHITELIST_FMBLA ham
+endif # Mail::SpamAssassin::Plugin::Shortcircuit

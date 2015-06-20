@@ -13,9 +13,11 @@ body       BODY_URIBL_FMBLA    eval:check_uridnsbl('BODY_URIBL_FMBLA')
 describe   BODY_URIBL_FMBLA    Body contains URI listed in FMBLA URIBL
 tflags     BODY_URIBL_FMBLA    net
 
-header     FROM_URIBL_FMBLA    eval:check_rbl_from_domain('fmbla', 'bl.fmb.la.', '127.0.0.2')
-describe   FROM_URIBL_FMBLA    From address listed in FMBLA URIBL
-tflags     FROM_URIBL_FMBLA    net
+if (version >= 3.004001) 
+  header     FROM_URIBL_FMBLA    eval:check_rbl_from_domain('fmbla', 'bl.fmb.la.', '127.0.0.2')
+  describe   FROM_URIBL_FMBLA    From address listed in FMBLA URIBL
+  tflags     FROM_URIBL_FMBLA    net
+endif
 
 #### Communicado
 
@@ -24,9 +26,11 @@ body       BODY_URIBL_COMMUNICADO_FMBLA    eval:check_uridnsbl('BODY_URIBL_COMMU
 describe   BODY_URIBL_COMMUNICADO_FMBLA    Body contains Communicado
 tflags     BODY_URIBL_COMMUNICADO_FMBLA    net
 
-header     FROM_URIBL_COMMUNICADO_FMBLA    eval:check_rbl_from_domain('fmbla', 'bl.fmb.la.', '127.1.0.2')
-describe   FROM_URIBL_COMMUNICADO_FMBLA    From address Communicado domain
-tflags     FROM_URIBL_COMMUNICADO_FMBLA    net
+if (version >= 3.004001) 
+  header     FROM_URIBL_COMMUNICADO_FMBLA    eval:check_rbl_from_domain('fmbla', 'bl.fmb.la.', '127.1.0.2')
+  describe   FROM_URIBL_COMMUNICADO_FMBLA    From address Communicado domain
+  tflags     FROM_URIBL_COMMUNICADO_FMBLA    net
+endif
 
 #### IP Address Checks
 
@@ -79,23 +83,25 @@ tflags           HEAD_NS_URIBL_FMBLA    net
 
 #### Fresh Domain Check
 
-urirhssub  BODY_NEWDOMAIN_FMBLA    fresh.fmb.la. A 127.0.0.2
-body       BODY_NEWDOMAIN_FMBLA    eval:check_uridnsbl('BODY_NEWDOMAIN_FMBLA')
-describe   BODY_NEWDOMAIN_FMBLA    Body contains URI listed in FMBLA URIBL
-tflags     BODY_NEWDOMAIN_FMBLA    net
-
-header     FROM_NEWDOMAIN_FMBLA    eval:check_rbl_from_domain('fmblafresh', 'fresh.fmb.la.', '127.0.0.2')
-describe   FROM_NEWDOMAIN_FMBLA    From address listed in FMBLA URIBL
-tflags     FROM_NEWDOMAIN_FMBLA    net
+urirhssub  BODY_NEWDOMAIN_FMBLA   fresh.fmb.la. A 127.0.0.2
+body       BODY_NEWDOMAIN_FMBLA   eval:check_uridnsbl('BODY_NEWDOMAIN_FMBLA')
+describe   BODY_NEWDOMAIN_FMBLA   Body contains URI listed in FMBLA URIBL
+tflags     BODY_NEWDOMAIN_FMBLA   net
 
 urirhssub  BODY_NEWDOMAIN_14_FMBLA    fresh.fmb.la. A 127.0.0.14
 body       BODY_NEWDOMAIN_14_FMBLA    eval:check_uridnsbl('BODY_NEWDOMAIN_14_FMBLA')
 describe   BODY_NEWDOMAIN_14_FMBLA    Body contains URI listed in FMBLA URIBL
 tflags     BODY_NEWDOMAIN_14_FMBLA    net
 
-header     FROM_NEWDOMAIN_14_FMBLA    eval:check_rbl_from_domain('fmblafresh', 'fresh.fmb.la.', '127.0.0.14')
-describe   FROM_NEWDOMAIN_14_FMBLA    From address listed in FMBLA URIBL
-tflags     FROM_NEWDOMAIN_14_FMBLA    net
+if (version >= 3.004001) 
+  header     FROM_NEWDOMAIN_FMBLA   eval:check_rbl_from_domain('fmblafresh', 'fresh.fmb.la.', '127.0.0.2')
+  describe   FROM_NEWDOMAIN_FMBLA   From address listed in FMBLA URIBL
+  tflags     FROM_NEWDOMAIN_FMBLA   net
+  
+  header     FROM_NEWDOMAIN_14_FMBLA    eval:check_rbl_from_domain('fmblafresh', 'fresh.fmb.la.', '127.0.0.14')
+  describe   FROM_NEWDOMAIN_14_FMBLA    From address listed in FMBLA URIBL
+  tflags     FROM_NEWDOMAIN_14_FMBLA    net
+endif
 
 meta NEWDOMAIN_FMBLA_URIBL (URIBL_RHS_DOB || BODY_NEWDOMAIN_FMBLA || FROM_NEWDOMAIN_FMBLA || FROM_NEWDOMAIN_14_FMBLA || BODY_NEWDOMAIN_14_FMBLA) && (URIBL_DBL_SPAM || URIBL_SBL_A)
 
@@ -104,12 +110,16 @@ ifpugin Mail::SpamAssassin::Plugin::AskDNS
   askdns     DKIM_WHITELIST_FMBLA _DKIMDOMAIN_.wl.fmb.la A /^127\.0\.0\.1$/
   tflags     DKIM_WHITELIST_FMBLA nice net
   describe   DKIM_WHITELIST_FMBLA Whitelisted DKIM Sender
+  
+  askdns     DKIM_BULKMAILER_FMBLA _DKIMDOMAIN_.wl.fmb.la A /^127\.10\.0\.2$/
+  tflags     DKIM_BULKMAILER_FMBLA nice net
+  describe   DKIM_BULKMAILER_FMBLA DKIM Bulkmailer
 endif # Mail::SpamAssassin::Plugin::AskDNS
 
 #### Scores
 #DKIM Whitelist
-score    DKIM_WHITELIST_FMBLA -7.5
-
+score   DKIM_WHITELIST_FMBLA -7.5
+score   DKIM_BULKMAILER_FMBLA -0.1
 #Short URI
 score    FMBLA_REDIR 0.01
 

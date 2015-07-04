@@ -116,6 +116,18 @@ ifpugin Mail::SpamAssassin::Plugin::AskDNS
   describe   DKIM_BULKMAILER_FMBLA DKIM Bulkmailer
 endif # Mail::SpamAssassin::Plugin::AskDNS
 
+#### iXhash ####
+
+ifplugin Mail::SpamAssassin::Plugin::iXhash2
+
+  ixhashdnsbl FMBLA_IXHASH  ix.fmb.la.
+  body        FMBLA_IXHASH  eval:check_ixhash('FMBLA_IXHASH')
+  describe    FMBLA_IXHASH
+  tflags      FMBLA_IXHASH  net
+  
+endif
+
+
 #### Scores
 #DKIM Whitelist
 score   DKIM_WHITELIST_FMBLA -7.5
@@ -153,6 +165,10 @@ score    FROM_NEWDOMAIN_FMBLA    0.2
 score    BODY_NEWDOMAIN_14_FMBLA    0.2
 score    FROM_NEWDOMAIN_14_FMBLA    0.2
 score    NEWDOMAIN_FMBLA_URIBL 2.0
+
+# iXhash
+
+score    FMBLA_IXHASH 1.0
 
 #### Below is optional, whitelist known DKIM senders, uncomment to use
 

@@ -126,9 +126,59 @@ ifplugin Mail::SpamAssassin::Plugin::iXhash2
 
   ixhashdnsbl FMBLA_IXHASH  ix.fmb.la.
   body        FMBLA_IXHASH  eval:check_ixhash('FMBLA_IXHASH')
-  describe    FMBLA_IXHASH
+  describe    FMBLA_IXHASH  iXhash listed in ix.fmb.la
   tflags      FMBLA_IXHASH  net
   
+endif
+
+#### HELO/PTR Classification
+
+if (version >= 3.004001) 
+  askdns     FMBLA_RDNS_GENERIC  _LASTEXTERNALRDNS_.sa.fmb.la A /^127\.0\.0\.1$/
+  tflags     FMBLA_RDNS_GENERIC net
+  describe   FMBLA_RDNS_GENERIC remote has GENERIC name
+  score      FMBLA_RDNS_GENERIC 0.01
+
+  askdns     FMBLA_RDNS_STATIC  _LASTEXTERNALRDNS_.sa.fmb.la A /^127\.0\.0\.2$/
+  tflags     FMBLA_RDNS_STATIC net
+  describe   FMBLA_RDNS_STATIC remote has STATIC name
+  score      FMBLA_RDNS_STATIC 0.01
+
+  askdns     FMBLA_RDNS_DYNAMIC  _LASTEXTERNALRDNS_.sa.fmb.la A /^127\.0\.0\.3$/
+  tflags     FMBLA_RDNS_DYNAMIC net
+  describe   FMBLA_RDNS_DYNAMIC remote has DYNAMIC name
+  score      FMBLA_RDNS_DYNAMIC 0.01
+  
+  askdns     FMBLA_RDNS_OUTMX _LASTEXTERNALRDNS_.sa.fmb.la A /^127\.0\.2\.11$/
+  tflags     FMBLA_RDNS_OUTMX net nice
+  describe   FMBLA_RDNS_OUTMX remote has OUT name
+  score      FMBLA_RDNS_OUTMX -0.01
+  
+  askdns     FMBLA_HELO_GENERIC  _LASTEXTERNALHELO_.sa.fmb.la A /^127\.0\.0\.1$/
+  tflags     FMBLA_HELO_GENERIC net
+  describe   FMBLA_HELO_GENERIC HELOd with GENERIC name
+  score      FMBLA_HELO_GENERIC 0.01
+
+  askdns     FMBLA_HELO_STATIC  _LASTEXTERNALHELO_.sa.fmb.la A /^127\.0\.0\.2$/
+  tflags     FMBLA_HELO_STATIC net
+  describe   FMBLA_HELO_STATIC HELOd with STATIC name
+  score      FMBLA_HELO_STATIC 0.01
+
+  askdns     FMBLA_HELO_DYNAMIC  _LASTEXTERNALHELO_.sa.fmb.la A /^127\.0\.0\.3$/
+  tflags     FMBLA_HELO_DYNAMIC net
+  describe   FMBLA_HELO_DYNAMIC HELOd with DYNAMIC name
+  score      FMBLA_HELO_DYNAMIC 0.01
+
+  askdns     FMBLA_HELO_BL _LASTEXTERNALHELO_.sa.fmb.la A /^127\.0\.0\.4$/
+  tflags     FMBLA_HELO_BL net
+  describe   FMBLA_HELO_BL HELOd with blacklisted name
+  score      FMBLA_HELO_BL 1.5
+
+  askdns     FMBLA_HELO_OUTMX _LASTEXTERNALHELO_.sa.fmb.la A /^127\.0\.2\.11$/
+  tflags     FMBLA_HELO_OUTMX net nice
+  describe   FMBLA_HELO_OUTMX HELOd with OUTMX name
+  score      FMBLA_HELO_OUTMX -0.01
+
 endif
 
 #### Metas

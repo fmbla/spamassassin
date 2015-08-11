@@ -197,7 +197,7 @@ score    EBL_FMBLA 0.01
 #URI BL
 score    BODY_URIBL_FMBLA 1.0
 score    FROM_URIBL_FMBLA 1.0
-score    URIBL_FMBLA_A    0.1
+score    URIBL_FMBLA_A    1.0
 
 #Communicado BL
 score    BODY_URIBL_COMMUNICADO_FMBLA 4.0

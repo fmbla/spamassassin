@@ -111,11 +111,11 @@ endif
 
 #### DKIM Whitelist
 ifpugin Mail::SpamAssassin::Plugin::AskDNS
-  askdns     DKIM_WHITELIST_FMBLA _DKIMDOMAIN_.wl.fmb.la A /^127\.0\.0\.1$/
+  askdns     DKIM_WHITELIST_FMBLA _DKIMDOMAIN_.lookup.dkimwl.org A /^127\.0\.0\.1$/
   tflags     DKIM_WHITELIST_FMBLA nice net
   describe   DKIM_WHITELIST_FMBLA Whitelisted DKIM Sender
   
-  askdns     DKIM_BULKMAILER_FMBLA _DKIMDOMAIN_.wl.fmb.la A /^127\.10\.0\.2$/
+  askdns     DKIM_BULKMAILER_FMBLA _DKIMDOMAIN_.lookup.dkimwl.org A /^127\.10\.0\.2$/
   tflags     DKIM_BULKMAILER_FMBLA nice net
   describe   DKIM_BULKMAILER_FMBLA DKIM Bulkmailer
 endif # Mail::SpamAssassin::Plugin::AskDNS

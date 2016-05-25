@@ -14,7 +14,7 @@ body       BODY_URIBL_FMBLA    eval:check_uridnsbl('BODY_URIBL_FMBLA')
 describe   BODY_URIBL_FMBLA    Body contains URI listed in FMBLA URIBL
 tflags     BODY_URIBL_FMBLA    net
 
-if (version >= 3.004001) 
+if (version >= 3.004001)
   header     FROM_URIBL_FMBLA    eval:check_rbl_from_domain('blfmbla', 'bl.fmb.la.', '127.0.0.2')
   describe   FROM_URIBL_FMBLA    From address listed in FMBLA URIBL
   tflags     FROM_URIBL_FMBLA    net
@@ -32,7 +32,7 @@ body       BODY_URIBL_COMMUNICADO_FMBLA    eval:check_uridnsbl('BODY_URIBL_COMMU
 describe   BODY_URIBL_COMMUNICADO_FMBLA    Body contains Communicado
 tflags     BODY_URIBL_COMMUNICADO_FMBLA    net
 
-if (version >= 3.004001) 
+if (version >= 3.004001)
   header     FROM_URIBL_COMMUNICADO_FMBLA    eval:check_rbl_from_domain('blfmbla', 'bl.fmb.la.', '127.1.0.2')
   describe   FROM_URIBL_COMMUNICADO_FMBLA    From address Communicado domain
   tflags     FROM_URIBL_COMMUNICADO_FMBLA    net
@@ -99,22 +99,22 @@ body       BODY_NEWDOMAIN_14_FMBLA    eval:check_uridnsbl('BODY_NEWDOMAIN_14_FMB
 describe   BODY_NEWDOMAIN_14_FMBLA    Body contains URI listed in FMBLA URIBL
 tflags     BODY_NEWDOMAIN_14_FMBLA    net
 
-if (version >= 3.004001) 
+if (version >= 3.004001)
   header     FROM_NEWDOMAIN_FMBLA   eval:check_rbl_from_domain('blfmbla', 'bl.fmb.la.', '127.0.0.2')
   describe   FROM_NEWDOMAIN_FMBLA   From address listed in FMBLA URIBL
   tflags     FROM_NEWDOMAIN_FMBLA   net
-  
+
   header     FROM_NEWDOMAIN_14_FMBLA    eval:check_rbl_from_domain('blfmbla', 'bl.fmb.la.', '127.0.0.14')
   describe   FROM_NEWDOMAIN_14_FMBLA    From address listed in FMBLA URIBL
   tflags     FROM_NEWDOMAIN_14_FMBLA    net
 endif
 
 #### DKIM Whitelist
-ifpugin Mail::SpamAssassin::Plugin::AskDNS
+ifplugin Mail::SpamAssassin::Plugin::AskDNS
   askdns     DKIM_WHITELIST_FMBLA _DKIMDOMAIN_.lookup.dkimwl.org A /^127\.0\.0\.1$/
   tflags     DKIM_WHITELIST_FMBLA nice net
   describe   DKIM_WHITELIST_FMBLA Whitelisted DKIM Sender
-  
+
   askdns     DKIM_BULKMAILER_FMBLA _DKIMDOMAIN_.lookup.dkimwl.org A /^127\.10\.0\.2$/
   tflags     DKIM_BULKMAILER_FMBLA nice net
   describe   DKIM_BULKMAILER_FMBLA DKIM Bulkmailer
@@ -128,12 +128,12 @@ ifplugin Mail::SpamAssassin::Plugin::iXhash2
   body        FMBLA_IXHASH  eval:check_ixhash('FMBLA_IXHASH')
   describe    FMBLA_IXHASH  iXhash listed in ix.fmb.la
   tflags      FMBLA_IXHASH  net
-  
+
 endif
 
 #### HELO/PTR Classification
 
-if (version >= 3.004001) 
+if (version >= 3.004001)
   askdns     FMBLA_RDNS_GENERIC  _LASTEXTERNALRDNS_.sa.fmb.la A /^127\.0\.0\.1$/
   tflags     FMBLA_RDNS_GENERIC net
   describe   FMBLA_RDNS_GENERIC remote has GENERIC name
@@ -148,12 +148,12 @@ if (version >= 3.004001)
   tflags     FMBLA_RDNS_DYNAMIC net
   describe   FMBLA_RDNS_DYNAMIC remote has DYNAMIC name
   score      FMBLA_RDNS_DYNAMIC 0.01
-  
+
   askdns     FMBLA_RDNS_OUTMX _LASTEXTERNALRDNS_.sa.fmb.la A /^127\.0\.2\.11$/
   tflags     FMBLA_RDNS_OUTMX net nice
   describe   FMBLA_RDNS_OUTMX remote has OUT name
   score      FMBLA_RDNS_OUTMX -0.01
-  
+
   askdns     FMBLA_HELO_GENERIC  _LASTEXTERNALHELO_.sa.fmb.la A /^127\.0\.0\.1$/
   tflags     FMBLA_HELO_GENERIC net
   describe   FMBLA_HELO_GENERIC HELOd with GENERIC name

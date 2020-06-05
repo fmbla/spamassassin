@@ -25,19 +25,6 @@ body       URIBL_FMBLA_A    eval:check_uridnsbl('URIBL_FMBLA_A')
 describe   URIBL_FMBLA_A    Contains URL's A record listed in the SBL blocklist
 tflags     URIBL_FMBLA_A    net a
 
-#### Communicado
-
-urirhssub  BODY_URIBL_COMMUNICADO_FMBLA    bl.fmb.la. A 127.1.0.2
-body       BODY_URIBL_COMMUNICADO_FMBLA    eval:check_uridnsbl('BODY_URIBL_COMMUNICADO_FMBLA')
-describe   BODY_URIBL_COMMUNICADO_FMBLA    Body contains Communicado
-tflags     BODY_URIBL_COMMUNICADO_FMBLA    net
-
-if (version >= 3.004001)
-  header     FROM_URIBL_COMMUNICADO_FMBLA    eval:check_rbl_from_domain('blfmbla', 'bl.fmb.la.', '127.1.0.2')
-  describe   FROM_URIBL_COMMUNICADO_FMBLA    From address Communicado domain
-  tflags     FROM_URIBL_COMMUNICADO_FMBLA    net
-endif
-
 #### IP Address Checks
 
 header   RCVD_IN_FMBBL   eval:check_rbl_sub('blfmbla-firsttrusted', '127.0.0.2')
@@ -207,10 +194,6 @@ score    EBL_FMBLA 0.01
 score    BODY_URIBL_FMBLA 1.0
 score    FROM_URIBL_FMBLA 1.0
 score    URIBL_FMBLA_A    1.0
-
-#Communicado BL
-score    BODY_URIBL_COMMUNICADO_FMBLA 4.0
-score    FROM_URIBL_COMMUNICADO_FMBLA 4.0
 
 #Last external IP
 score    RCVD_IN_FMBBL 1.0

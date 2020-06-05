@@ -1,12 +1,6 @@
 header   __RCVD_IN_FMBBL     eval:check_rbl('blfmbla-firsttrusted', 'bl.fmb.la.')
 tflags   __RCVD_IN_FMBBL     net
 
-ifplugin Mail::SpamAssassin::Plugin::EmailBL
-  header   EBL_FMBLA eval:check_emailbl('all-headers', 'bl.fmb.la')
-  describe EBL_FMBLA From address in bl.fmb.la
-  tflags   EBL_FMBLA net
-endif
-
 #### URI BL Check
 
 urirhssub  BODY_URIBL_FMBLA    bl.fmb.la. A 127.0.0.2
@@ -107,13 +101,47 @@ endif
 
 #### DKIM Whitelist
 ifplugin Mail::SpamAssassin::Plugin::AskDNS
-  askdns     DKIM_WHITELIST_FMBLA _DKIMDOMAIN_.lookup.dkimwl.org A /^127\.0\.0\.1$/
-  tflags     DKIM_WHITELIST_FMBLA nice net
-  describe   DKIM_WHITELIST_FMBLA Whitelisted DKIM Sender
+  askdns    __DKIMWL_FREEMAIL _DKIMDOMAIN_.lookup.dkimwl.org A /^127\.\d+\.3\.\d+$/
+  tflags    __DKIMWL_FREEMAIL net
 
-  askdns     DKIM_BULKMAILER_FMBLA _DKIMDOMAIN_.lookup.dkimwl.org A /^127\.10\.0\.2$/
-  tflags     DKIM_BULKMAILER_FMBLA nice net
-  describe   DKIM_BULKMAILER_FMBLA DKIM Bulkmailer
+  askdns    __DKIMWL_BULKMAIL _DKIMDOMAIN_.lookup.dkimwl.org A /^127\.\d+\.2\.\d+$/
+  tflags    __DKIMWL_BULKMAIL net
+
+  askdns    __DKIMWL_WL_HI    _DKIMDOMAIN_.lookup.dkimwl.org A /^127\.\d+\.\d+\.5$/
+  tflags    __DKIMWL_WL_HI    net
+
+  askdns    __DKIMWL_WL_MEDHI _DKIMDOMAIN_.lookup.dkimwl.org A /^127\.\d+\.\d+\.4$/
+  tflags    __DKIMWL_WL_MEDHI net
+ 
+  askdns    __DKIMWL_WL_MED   _DKIMDOMAIN_.lookup.dkimwl.org A /^127\.\d+\.\d+\.3$/
+  tflags    __DKIMWL_WL_MED   net
+
+  askdns    __DKIMWL_WL_BL   _DKIMDOMAIN_.lookup.dkimwl.org A /^127\.\d+\.\d+\.0$/
+  tflags    __DKIMWL_WL_BL   net
+
+  askdns    __DKIMWL_BLOCKED  _DKIMDOMAIN_.lookup.dkimwl.org A /^127\.255\.255\.255$/
+  tflags    __DKIMWL_BLOCKED  net
+
+  meta      DKIMWL_WL_HIGH  __DKIMWL_WL_HI && !(FREEMAIL_FROM || FREEMAIL_REPLYTO || FREEMAIL_FORGED_REPLYTO || __DKIMWL_FREEMAIL || __DKIMWL_BULKMAIL)
+  tflags    DKIMWL_WL_HIGH  net nice publish
+  describe  DKIMWL_WL_HIGH  DKIMwl.org - Whitelisted High sender
+
+  meta      DKIMWL_WL_MEDHI    __DKIMWL_WL_MEDHI && !(FREEMAIL_FROM || FREEMAIL_REPLYTO || FREEMAIL_FORGED_REPLYTO || __DKIMWL_FREEMAIL)
+  tflags    DKIMWL_WL_MEDHI    net nice publish
+  describe  DKIMWL_WL_MEDHI    DKIMwl.org - Medium-high sender
+
+  meta      DKIMWL_WL_MED    __DKIMWL_WL_MED && !(FREEMAIL_FROM || FREEMAIL_REPLYTO || FREEMAIL_FORGED_REPLYTO || __DKIMWL_FREEMAIL)
+  tflags    DKIMWL_WL_MED    net nice publish
+  describe  DKIMWL_WL_MED    DKIMwl.org - Medium sender
+
+  meta      DKIMWL_BL  __DKIMWL_WL_BL
+  tflags    DKIMWL_BL  net publish
+  describe  DKIMWL_BL  DKIMwl.org - Blacklisted sender
+  
+  meta      DKIMWL_BLOCKED  __DKIMWL_BLOCKED
+  tflags    DKIMWL_BLOCKED  net publish
+  describe  DKIMWL_BLOCKED  ADMINISTRATOR NOTICE: The query to DKIMWL.org was blocked.  See http://wiki.apache.org/spamassassin/DnsBlocklists\#dnsbl-block for more information.
+  score     DKIMWL_BLOCKED  0.001 # limit
 endif # Mail::SpamAssassin::Plugin::AskDNS
 
 #### iXhash ####
@@ -182,13 +210,13 @@ meta NEWDOMAIN_FMBLA_URIBL (URIBL_RHS_DOB + BODY_NEWDOMAIN_FMBLA + FROM_NEWDOMAI
 
 #### Scores
 #DKIM Whitelist
-score   DKIM_WHITELIST_FMBLA -7.5
-score   DKIM_BULKMAILER_FMBLA -0.1
+score   DKIMWL_WL_HIGH -7.5
+score   DKIMWL_BL 3.0
+score   DKIMWL_WL_MED -0.5
+score   DKIMWL_WL_MEDHI -1.0
+
 #Short URI
 score    FMBLA_REDIR 0.01
-
-#Email BL
-score    EBL_FMBLA 0.01
 
 #URI BL
 score    BODY_URIBL_FMBLA 1.0
@@ -213,8 +241,9 @@ score    BODY_NEWDOMAIN_FMBLA    0.2
 score    FROM_NEWDOMAIN_FMBLA    0.2
 score    BODY_NEWDOMAIN_14_FMBLA    0.2
 score    FROM_NEWDOMAIN_14_FMBLA    0.2
+score    BODY_NEWDOMAIN_28_FMBLA  0.2
+score    FROM_NEWDOMAIN_28_FMBLA  0.2
 score    NEWDOMAIN_FMBLA_URIBL 2.0
-
 # iXhash
 
 score    FMBLA_IXHASH 1.0
@@ -222,5 +251,5 @@ score    FMBLA_IXHASH 1.0
 #### Below is optional, whitelist known DKIM senders, uncomment to use
 
 ifplugin Mail::SpamAssassin::Plugin::Shortcircuit
-#  shortcircuit DKIM_WHITELIST_FMBLA ham
+#  shortcircuit DKIMWL_WL_HIGH ham
 endif # Mail::SpamAssassin::Plugin::Shortcircuit

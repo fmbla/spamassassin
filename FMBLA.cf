@@ -1,3 +1,11 @@
+ifplugin Mail::SpamAssassin::Plugin::iXhash2
+
+  ixhashdnsbl     FMBLA_IXHASH  ix.fmb.la.
+  body            FMBLA_IXHASH  eval:check_ixhash('FMBLA_IXHASH')
+  tflags          FMBLA_IXHASH  net
+
+endif
+
 header   __RCVD_IN_FMBBL     eval:check_rbl('blfmbla-firsttrusted', 'bl.fmb.la.')
 tflags   __RCVD_IN_FMBBL     net
 
